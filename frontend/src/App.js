@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from './styles/GlobalStyle';
 import Navbar from './components/Navbar';
+import Home from './pages/Home';
 
 const theme = {
   colors: {
@@ -29,7 +30,7 @@ function App() {
       <Router>
         <Navbar />
         <Switch>
-          <Route exact path="/" component={() => <Placeholder title="Questions Feed" />} />
+          <Route exact path="/" component={Home} />
           <Route path="/questions/:id" component={() => <Placeholder title="Question Detail" />} />
           <Route path="/ask" component={() => <Placeholder title="Ask a Question" />} />
         </Switch>
