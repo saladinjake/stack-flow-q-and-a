@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import GlobalStyle from './styles/GlobalStyle';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
+import QuestionDetail from './pages/QuestionDetail';
 
 const theme = {
   colors: {
@@ -31,7 +32,7 @@ function App() {
         <Navbar />
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/questions/:id" component={() => <Placeholder title="Question Detail" />} />
+          <Route path="/questions/:id" component={QuestionDetail} />
           <Route path="/ask" component={() => <Placeholder title="Ask a Question" />} />
         </Switch>
       </Router>
