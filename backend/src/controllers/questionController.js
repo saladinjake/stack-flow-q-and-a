@@ -28,7 +28,15 @@ const createQuestion = async (req, res) => {
 // @route GET /api/questions/:id
 const getQuestionById = async (req, res) => {
   try {
-    const question = await Question.findById(req.params.id).populate('author', ['name', 'avatar']).populate('answers');
+    const question = await Question.findById(req.params.id)
+      .populate('author', ['name', 'avatar'])
+      .populate({
+        path: 'answers',
+        populate: {
+          path: 'author',
+          select: ['name', 'avatar']
+        }
+      });
     if (!question) return res.status(404).json({ message: 'Question not found' });
     res.json(question);
   } catch (error) {

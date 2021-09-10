@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const PageContainer = styled.div`
   max-width: 1264px;
@@ -130,12 +131,15 @@ const Home = () => {
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
-    // Mock data
-    setQuestions([
-      { _id: '1', title: 'How to use Styled Components with React 17?', content: 'I am trying to implement a theme provider but keep getting errors regarding version mismatch.', tags: ['react', 'styled-components'], upvotes: 15, answers: 2, views: 120 },
-      { _id: '2', title: 'Express.js route nesting best practices', content: 'What is the most maintainable way to structure nested routes in a large Express application?', tags: ['node.js', 'express'], upvotes: 8, answers: 5, views: 340 },
-      { _id: '3', title: 'Mongoose populate vs manual queries', content: 'Is it better to use .populate() or perform multiple queries for better performance in a distributed system?', tags: ['mongodb', 'mongoose'], upvotes: 22, answers: 1, views: 89 }
-    ]);
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get('/api/questions');
+        setQuestions(response.data);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+      }
+    };
+    fetchQuestions();
   }, []);
 
   return (

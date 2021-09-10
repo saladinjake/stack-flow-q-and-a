@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
+import axios from 'axios';
 
 const PageContainer = styled.div`
   max-width: 1264px;
@@ -92,25 +93,67 @@ const AnswerSection = styled.div`
   h2 { font-size: 19px; margin-bottom: 16px; font-weight: 400; border-bottom: 1px solid ${({ theme }) => theme.colors.border}; padding-bottom: 10px; }
 `;
 
+const AnswerForm = styled.form`
+  margin-top: 30px;
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  padding-top: 20px;
+  
+  h3 { font-size: 19px; margin-bottom: 16px; font-weight: 400; }
+  textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 10px;
+    border: 1px solid #babfc4;
+    border-radius: 3px;
+    margin-bottom: 15px;
+  }
+`;
+
+const SubmitButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.secondary};
+  color: white;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+`;
+
 const QuestionDetail = () => {
   const { id } = useParams();
   const [question, setQuestion] = useState(null);
+  const [answerContent, setAnswerContent] = useState('');
+
+  const fetchQuestion = async () => {
+    try {
+      const response = await axios.get(`/api/questions/${id}`);
+      setQuestion(response.data);
+    } catch (error) {
+      console.error('Error fetching question:', error);
+    }
+  };
 
   useEffect(() => {
-    // Mock data
-    setQuestion({
-      _id: id,
-      title: 'How to use Styled Components with React 17?',
-      content: 'I am trying to implement a theme provider but keep getting errors regarding version mismatch. Here is my code: ...',
-      tags: ['react', 'styled-components'],
-      upvotes: 15,
-      createdAt: '2021-09-02',
-      author: { name: 'John Doe' },
-      answers: [
-        { _id: 'a1', content: 'You need to ensure you are using the legacy peer deps flag during installation.', upvotes: 10, author: { name: 'Jane Smith' } }
-      ]
-    });
+    fetchQuestion();
   }, [id]);
+
+  const handleAnswerSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const authorId = '69f1c7baa688942bcebad997'; // Seeded Demo User ID
+      await axios.post('/api/answers', {
+        content: answerContent,
+        question: id,
+        author: authorId
+      });
+      setAnswerContent('');
+      fetchQuestion(); // Refresh question to show new answer
+    } catch (error) {
+      console.error('Error posting answer:', error);
+      alert('Failed to post answer.');
+    }
+  };
 
   if (!question) return <div>Loading...</div>;
 
@@ -167,6 +210,17 @@ const QuestionDetail = () => {
             </PostLayout>
           ))}
         </AnswerSection>
+
+        <AnswerForm onSubmit={handleAnswerSubmit}>
+          <h3>Your Answer</h3>
+          <textarea 
+            value={answerContent} 
+            onChange={(e) => setAnswerContent(e.target.value)} 
+            placeholder="Write your answer here..."
+            required
+          />
+          <SubmitButton type="submit">Post Your Answer</SubmitButton>
+        </AnswerForm>
       </MainContent>
     </PageContainer>
   );
