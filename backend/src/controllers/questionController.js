@@ -1,4 +1,6 @@
 const Question = require('../models/Question');
+const Answer = require('../models/Answer');
+const User = require('../models/User');
 
 // @desc  Get all questions
 // @route GET /api/questions
@@ -40,6 +42,7 @@ const getQuestionById = async (req, res) => {
     if (!question) return res.status(404).json({ message: 'Question not found' });
     res.json(question);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
